@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import LoginPage from "./pages/auth/LoginPage";
+import AuthCallback from "./pages/auth/AuthCallback";
 import UserDashboard from "./pages/guest/UserDashboard";
 import StaffDashboard from "./pages/staff/StaffDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -7,9 +8,16 @@ import UserProfilePage from "./pages/guest/UserProfilePage";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 function ProtectedRoute({ children, allowedRoles }) {
-  const { user } = useAuth();
-  if (!user) return <Navigate to="/" />;
-  if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
+  const { user, userRole } = useAuth();
+  
+  if (!user) {
+    return <Navigate to="/" />;
+  }
+  
+  if (!userRole || !allowedRoles.includes(userRole)) {
+    return <Navigate to="/" />;
+  }
+  
   return children;
 }
 
@@ -18,7 +26,8 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
+                     <Route path="/" element={<LoginPage />} />
+           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/user-dashboard"
             element={
