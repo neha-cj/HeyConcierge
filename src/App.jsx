@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import LoginPage from "./pages/LoginPage";
-import UserDashboard from "./pages/UserDashboard";
-import StaffDashboard from "./pages/StaffDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-import UserProfilePage from "./pages/UserProfilePage";
+import LoginPage from "./pages/auth/LoginPage";
+import UserDashboard from "./pages/guest/UserDashboard";
+import StaffDashboard from "./pages/staff/StaffDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserProfilePage from "./pages/guest/UserProfilePage";
 import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
 function ProtectedRoute({ children, allowedRoles }) {
