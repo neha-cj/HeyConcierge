@@ -1,25 +1,44 @@
-import { useState } from 'react'
-import { supabase } from './supabaseClient'
+import { useState, useEffect } from 'react'
+import { supabase } from './services/supabaseClient'
 import './App.css'
 
 function App() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [error, setError] = useState('')
+
+  useEffect(() => {
+    // Check if user is already logged in
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
+    })
+
+    // Listen to auth changes
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
+
+    return () => {
+      listener.subscription.unsubscribe()
+    }
+  }, [])
 
   const handleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithPassword({
+    const { error } = await supabase.auth.signInWithPassword({
+  email,
+  password,
+})
+    if (error) alert(error.message)
+    else alert('Login successful!')
+  }
+
+  const handleSignup = async () => {
+    const {  error } = await supabase.auth.signUp({
       email,
       password,
     })
-
-    if (error) {
-      setError(error.message)
-    } else {
-      setUser(data.user)
-      setError('')
-    }
+    if (error) alert(error.message)
+    else alert('Signup successful! Check your email to confirm.')
   }
 
   const handleLogout = async () => {
@@ -28,38 +47,31 @@ function App() {
   }
 
   return (
-    <div className="app-container">
-      <h1>Hotel Concierge App</h1>
+    <div className="app">
+      <h1>🏨 Hotel App Login</h1>
 
-      {!user ? (
-        <div className="login-form">
+      {user ? (
+        <>
+          <p>Welcome, {user.email}!</p>
+          <button onClick={handleLogout}>Logout</button>
+        </>
+      ) : (
+        <>
           <input
             type="email"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-          />
+          /><br/>
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-          />
+          /><br/>
           <button onClick={handleLogin}>Login</button>
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-        </div>
-      ) : (
-        <div className="dashboard">
-          <p>Welcome, {user.email}!</p>
-          <h2>Available Concierge Services</h2>
-          <ul>
-            <li>Room Service</li>
-            <li>Spa Booking</li>
-            <li>Taxi Arrangement</li>
-            <li>Tour Guide Request</li>
-          </ul>
-          <button onClick={handleLogout}>Logout</button>
-        </div>
+          <button onClick={handleSignup}>Sign Up</button>
+        </>
       )}
     </div>
   )

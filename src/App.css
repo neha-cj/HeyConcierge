@@ -1,23 +1,28 @@
-.app-container {
-  font-family: sans-serif;
-  padding: 2rem;
+.app {
   max-width: 400px;
-  margin: auto;
+  margin: 40px auto;
+  padding: 2rem;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  text-align: center;
+  font-family: Arial, sans-serif;
 }
-
-.login-form input {
-  display: block;
-  margin: 10px 0;
-  padding: 0.5rem;
-  width: 100%;
+input {
+  margin: 8px;
+  padding: 10px;
+  width: 90%;
+  border-radius: 6px;
+  border: 1px solid #aaa;
 }
-
-.login-form button, .dashboard button {
-  padding: 0.5rem 1rem;
-  margin-top: 10px;
+button {
+  margin: 8px;
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: #333;
+  color: white;
+  cursor: pointer;
 }
-
-.dashboard ul {
-  list-style-type: disc;
-  margin-left: 20px;
+button:hover {
+  background-color: #555;
 }
