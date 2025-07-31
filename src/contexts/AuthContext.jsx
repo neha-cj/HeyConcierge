@@ -1,7 +1,6 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
-
-const AuthContext = createContext();
+import { AuthContext } from "./AuthContext";
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -58,6 +57,7 @@ export function AuthProvider({ children }) {
       setUserRole(null);
     } catch (error) {
       setUserRole(null);
+      console.log(error);
     }
   };
 
@@ -108,7 +108,7 @@ export function AuthProvider({ children }) {
       options: {
         data: {
           full_name: fullName,
-          room_no: roomNumber
+          room_number: roomNumber
         },
         emailRedirectTo: `${window.location.origin}/auth/callback`
       }
@@ -121,7 +121,7 @@ export function AuthProvider({ children }) {
       id: userId,
       email,
       full_name: fullName,
-      room_no: roomNumber,
+      room_number: roomNumber,
     });
 
     if (insertErr) throw insertErr;
@@ -142,6 +142,4 @@ export function AuthProvider({ children }) {
   );
 }
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
+

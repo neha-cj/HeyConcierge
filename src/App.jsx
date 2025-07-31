@@ -5,7 +5,8 @@ import UserDashboard from "./pages/guest/UserDashboard";
 import StaffDashboard from "./pages/staff/StaffDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserProfilePage from "./pages/guest/UserProfilePage";
-import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import { AuthProvider } from "./contexts/AuthContext";
+import { useAuth } from "./contexts/useAuth";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, userRole } = useAuth();

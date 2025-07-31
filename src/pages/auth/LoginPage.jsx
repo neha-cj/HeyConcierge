@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "../../contexts/useAuth";
 import "./LoginPage.css";
 
 export default function LoginPage() {
@@ -12,7 +12,7 @@ export default function LoginPage() {
     password: "",
     role: "user", // Default to user
     full_name: "",
-    room_no: "",
+    room_number: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [showResendEmail, setShowResendEmail] = useState(false);
 
-  async function handleSignup(email, password, full_name, room_no) {
+  async function handleSignup(email, password, full_name, room_number) {
     try {
       // Check if Supabase client is properly configured
       if (!supabase) {
@@ -34,7 +34,7 @@ export default function LoginPage() {
         options: {
           data: {
             full_name,
-            room_no
+            room_number
           },
           emailRedirectTo: `${window.location.origin}/auth/callback`
         }
@@ -55,7 +55,7 @@ export default function LoginPage() {
           id: authData.user.id,
           email: email,
           full_name: full_name,
-          room_no: room_no,
+          room_number: room_number,
         }])
         .select();
 
@@ -150,12 +150,12 @@ export default function LoginPage() {
         // Only users (guests) can sign up
         
         // Validate required fields
-        if (!form.email || !form.password || !form.full_name || !form.room_no) {
+        if (!form.email || !form.password || !form.full_name || !form.room_number) {
           throw new Error('All fields are required for signup');
         }
 
         // Use AuthContext signup function
-        await signup(form.email, form.password, form.full_name, form.room_no);
+        await signup(form.email, form.password, form.full_name, form.room_number);
         
         alert("Signup successful! Please check your email and click the confirmation link before logging in.");
         setIsSignup(false);
@@ -222,9 +222,9 @@ export default function LoginPage() {
             <input
               type="text"
               placeholder="Room Number"
-              value={form.room_no}
+              value={form.room_number}
               required
-              onChange={(e) => setForm({ ...form, room_no: e.target.value })}
+              onChange={(e) => setForm({ ...form, room_number: e.target.value })}
             />
           </>
         )}
@@ -290,7 +290,7 @@ export default function LoginPage() {
               ...form,
               role: "user",
               full_name: "",
-              room_no: ""
+              room_number: ""
             });
           }}
         >
