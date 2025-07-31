@@ -1,0 +1,90 @@
+.login-page {
+  background: linear-gradient(120deg, #101014 0%, #191a1d 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-form {
+  background: rgba(24,25,27,0.98);
+  border: 1px solid #292a2c;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 32px rgba(0,0,0,.46);
+  display: flex;
+  flex-direction: column;
+  width: 370px;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.logo-brand {
+  font-size: 2.1rem;
+  font-weight: bold;
+  letter-spacing: 0.16em;
+  color: #e0e0e0;
+  margin-bottom: 0.2rem;
+  font-family: 'Cinzel', 'serif', serif;
+}
+
+.subtitle {
+  font-size: 1.1rem;
+  color: #9ca3af;
+  margin-bottom: 1.1rem;
+  letter-spacing: 0.08em;
+}
+
+.login-form input,
+.login-form select {
+  padding: 0.8rem 1rem;
+  background: #191a1d;
+  color: #e7e8ea;
+  border: 1px solid #36373a;
+  border-radius: 0.6rem;
+  font-size: 1.07rem;
+  width: 100%;
+  outline: none;
+  transition: border-color .2s;
+}
+
+.login-form input:focus,
+.login-form select:focus {
+  border-color: #e0e0e0;
+}
+
+.login-form .error-msg {
+  color: #e53935;
+  font-size: .95rem;
+  text-align: left;
+  margin-top: -0.3rem;
+  margin-bottom: -0.3rem;
+}
+
+.login-form button {
+  background: linear-gradient(90deg, #e0e0e0 60%, #bcbcbc 100%);
+  color: #1a1b1c;
+  padding: .92rem 0;
+  border: none;
+  border-radius: .7rem;
+  font-size: 1.11rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: .5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  width: 100%;
+  transition: background .2s;
+}
+
+.login-form button:disabled {
+  background: #36373a;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.login-footer {
+  color: #444;
+  font-size: 0.98rem;
+  margin-top: 2rem;
+}
