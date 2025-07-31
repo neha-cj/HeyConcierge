@@ -1,4 +1,6 @@
-import { useAuth } from "../../contexts/AuthContext";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/useAuth";
+import { supabase } from "../../services/supabaseClient";
 import "./UserProfilePage.css";
 
 const mockRequests = [
@@ -20,13 +22,39 @@ const mockRequests = [
 
 export default function UserProfilePage() {
   const { user } = useAuth();
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    if (user) {
+      loadUserData();
+    }
+  }, [user]);
+
+  const loadUserData = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) {
+        console.error('Error loading user data:', error);
+        return;
+      }
+
+      setUserData(data);
+    } catch (error) {
+      console.error('Error loading user data:', error);
+    }
+  };
 
   return (
     <div className="user-profile-bg">
       <div className="profile-card">
-        <h2>{user?.name}</h2>
-        <div className="profile-row">Room: <span>{user?.room}</span></div>
-        <div className="profile-row">Email: <span>{user?.email}</span></div>
+        <h2>{userData?.full_name || user?.user_metadata?.full_name}</h2>
+        <div className="profile-row">Room: <span>{userData?.room_number || user?.user_metadata?.room_number}</span></div>
+        <div className="profile-row">Email: <span>{userData?.email || user?.email}</span></div>
         <div className="profile-row">Phone: <span>+1 555 301 1234</span></div>
       </div>
     </div>
