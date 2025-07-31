@@ -1,80 +1,60 @@
-import { useState, useEffect } from 'react'
-import { supabase } from './services/supabaseClient'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import LoginPage from "./pages/auth/LoginPage";
+import UserDashboard from "./pages/guest/UserDashboard";
+import StaffDashboard from "./pages/staff/StaffDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import UserProfilePage from "./pages/guest/UserProfilePage";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
 
-function App() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
-
-  useEffect(() => {
-    // Check if user is already logged in
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null)
-    })
-
-    // Listen to auth changes
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null)
-    })
-
-    return () => {
-      listener.subscription.unsubscribe()
-    }
-  }, [])
-
-  const handleLogin = async () => {
-    const { error } = await supabase.auth.signInWithPassword({
-  email,
-  password,
-})
-    if (error) alert(error.message)
-    else alert('Login successful!')
-  }
-
-  const handleSignup = async () => {
-    const {  error } = await supabase.auth.signUp({
-      email,
-      password,
-    })
-    if (error) alert(error.message)
-    else alert('Signup successful! Check your email to confirm.')
-  }
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut()
-    setUser(null)
-  }
-
-  return (
-    <div className="app">
-      <h1>🏨 Hotel App Login</h1>
-
-      {user ? (
-        <>
-          <p>Welcome, {user.email}!</p>
-          <button onClick={handleLogout}>Logout</button>
-        </>
-      ) : (
-        <>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          /><br/>
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          /><br/>
-          <button onClick={handleLogin}>Login</button>
-          <button onClick={handleSignup}>Sign Up</button>
-        </>
-      )}
-    </div>
-  )
+function ProtectedRoute({ children, allowedRoles }) {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/" />;
+  if (!allowedRoles.includes(user.role)) return <Navigate to="/" />;
+  return children;
 }
 
-export default App
+function App() {
+  return (
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route
+            path="/user-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["User"]}>
+                <UserDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/staff-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["Staff"]}>
+                <StaffDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["Admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user-profile"
+            element={
+              <ProtectedRoute allowedRoles={["User"]}>
+                <UserProfilePage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </AuthProvider>
+  );
+}
+
+export default App;

@@ -1,0 +1,234 @@
+.admin-dashboard-bg {
+  background: linear-gradient(120deg, #181818 0%, #111215 100%);
+  min-height: 100vh;
+}
+
+.admin-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.3rem 2rem;
+  background: #191a1d;
+  color: #ffd700;
+  font-size: 1.18rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px #000c;
+}
+
+.nav-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 1.38rem;
+  letter-spacing: 0.05em;
+}
+
+.admin-name {
+  margin-right: 1rem;
+  color: #37a6ff;
+  font-weight: 700;
+  font-size: 1.07rem;
+}
+
+.logout-btn {
+  background: #181818;
+  color: #ffd700;
+  border: 1px solid #ffd700;
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+  font-weight: 500;
+  font-size: 1.03rem;
+}
+
+.admin-content {
+  padding: 2rem 3vw;
+}
+
+.metrics-bar {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.2rem;
+}
+
+.metric-card {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: .9rem;
+  box-shadow: 0 2px 14px #0008;
+  padding: 1.2rem 2rem;
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: .5rem;
+}
+
+.metric-title {
+  font-size: .97rem;
+  color: #ffd700;
+  font-family: 'Cinzel', serif;
+}
+
+.metric-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #37a6ff;
+}
+
+.charts-bar {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2.1rem;
+}
+
+.bar-chart {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: .9rem;
+  box-shadow: 0 2px 14px #0008;
+  padding: 1rem 1.5rem;
+  min-width: 260px;
+}
+
+.chart-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #ffd700;
+  font-family: 'Cinzel', serif;
+}
+
+.bar-chart-graph {
+  display: flex;
+  align-items: flex-end;
+  gap: .7rem;
+  height: 100px;
+}
+
+.bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .3rem;
+}
+
+.bar-inner {
+  width: 24px;
+  background: linear-gradient(180deg,#ffd700 60%, #37a6ff 100%);
+  border-radius: .5rem .5rem 0 0;
+}
+
+.top-performers {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: .9rem;
+  box-shadow: 0 2px 14px #0008;
+  padding: 1rem 1.5rem;
+  min-width: 180px;
+}
+
+.top-performers ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.top-performers li {
+  font-size: 1.02rem;
+  color: #37a6ff;
+  font-weight: 600;
+  margin-bottom: .5rem;
+}
+
+.control-panel {
+  margin-top: 2rem;
+}
+
+.filters-bar {
+  display: flex;
+  gap: 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.filters-bar select,
+.filters-bar input {
+  padding: .6rem;
+  background: #191a1d;
+  color: #e7e8ea;
+  border-radius: .6rem;
+  border: 1px solid #36373a;
+  font-size: 1rem;
+}
+
+.filters-bar select:focus,
+.filters-bar input:focus {
+  border-color: #ffd700;
+}
+
+.requests-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.3rem;
+}
+
+.admin-request-card {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px #000a;
+  padding: 1.6rem 2rem;
+  min-width: 300px;
+  max-width: 340px;
+  flex: 1 1 300px;
+  display: flex;
+  flex-direction: column;
+  gap: .7rem;
+}
+
+.card-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.request-type {
+  font-weight: 700;
+  font-size: 1.13rem;
+  color: #ffd700;
+}
+
+.urgency-label {
+  font-size: 0.98rem;
+  padding: .19rem .8rem;
+  border-radius: .5rem;
+  font-weight: 600;
+  letter-spacing: .03em;
+}
+
+.urgency-high { background: #ffe1e1; color: #b91c1c; }
+.urgency-medium { background: #fff5d1; color: #ca8a04; }
+.urgency-low { background: #d1fae5; color: #065f46; }
+
+.request-room, .assigned-label, .request-status {
+  font-size: .98rem;
+  color: #e7e8ea;
+}
+
+.request-status span {
+  font-weight: 600;
+  color: #ffd700;
+}
+
+.actions-bar {
+  display: flex;
+  gap: .6rem;
+  margin-top: .5rem;
+}
+
+.reassign-btn, .escalate-btn {
+  background: linear-gradient(90deg,#ffd700 70%, #f59e42 100%);
+  color: #181818;
+  border: none;
+  border-radius: .5rem;
+  padding: .5rem 1rem;
+  font-size: .97rem;
+  font-weight: 700;
+  cursor: pointer;
+}
