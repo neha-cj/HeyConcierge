@@ -5,8 +5,7 @@ import UserDashboard from "./pages/guest/UserDashboard";
 import StaffDashboard from "./pages/staff/StaffDashboard";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import UserProfilePage from "./pages/guest/UserProfilePage";
-import { AuthProvider } from "./contexts/AuthContext.jsx";
-import { useAuth } from "./contexts/useAuth.jsx";
+import { useAuth, AuthProvider } from "./contexts/AuthContext.jsx";
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user, userRole } = useAuth();
@@ -27,7 +26,8 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-                     <Route path="/" element={<LoginPage />} />
+                     
+           <Route path="/" element={<LoginPage />} />
            <Route path="/auth/callback" element={<AuthCallback />} />
           <Route
             path="/user-dashboard"

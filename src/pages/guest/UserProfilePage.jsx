@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/useAuth.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import { supabase } from "../../services/supabaseClient";
 import "./UserProfilePage.css";
 
