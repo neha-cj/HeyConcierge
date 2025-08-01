@@ -1,0 +1,73 @@
+.user-profile-bg {
+  background: linear-gradient(90deg, #181818 0%, #111215 100%);
+  min-height: 100vh;
+  padding-top: 3.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-card {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: 1.1rem;
+  box-shadow: 0 4px 24px #000b;
+  padding: 2rem 2.5rem;
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  margin-bottom: 2rem;
+}
+
+.profile-card h2 {
+  font-weight: 700;
+  margin-bottom: .3rem;
+  color: #ffd700;
+  font-family: 'Cinzel', serif;
+  font-size: 2rem;
+}
+
+.profile-row {
+  font-size: 1.09rem;
+  color: #e7e8ea;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.edit-btn {
+  background: linear-gradient(90deg,#ffd700 70%, #f59e42 100%);
+  color: #181818;
+  border: none;
+  border-radius: .6rem;
+  padding: .5rem 1rem;
+  font-size: .97rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.service-history {
+  background: #191a1d;
+  border: 1px solid #222326;
+  border-radius: 1.1rem;
+  box-shadow: 0 4px 24px #000b;
+  padding: 1.5rem 2rem;
+  width: 420px;
+}
+
+.service-history h3 {
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #ffd700;
+  font-family: 'Cinzel', serif;
+}
+
+.service-history ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-card {
