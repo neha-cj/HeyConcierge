@@ -1,6 +1,11 @@
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "../services/supabaseClient";
-import { AuthContext } from "./AuthContext";
+
+const AuthContext = createContext();
+
+export function useAuth() {
+  return useContext(AuthContext);
+}
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
@@ -129,6 +134,35 @@ export function AuthProvider({ children }) {
     return data;
   };
 
+  // 📝 Signup for staff
+  const signupStaff = async (email, password, fullName, staffId) => {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          full_name: fullName,
+          staff_id: staffId,
+        },
+        emailRedirectTo: `${window.location.origin}/auth/callback`
+      }
+    });
+    if (error) throw error;
+
+    const userId = data.user.id;
+
+    const { error: insertErr } = await supabase.from("staff").insert({
+      id: userId,
+      email,
+      full_name: fullName,
+      staff_id: staffId,
+    });
+
+    if (insertErr) throw insertErr;
+
+    return data;
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     setUser(null);
@@ -136,10 +170,8 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, userRole, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, userRole, login, signup, signupStaff, logout }}>
       {children}
     </AuthContext.Provider>
   );
 }
-
-

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../contexts/useAuth.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import "./AdminDashboard.css";
 
 const mockAnalytics = {

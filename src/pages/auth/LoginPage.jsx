@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/useAuth.jsx";
+import { useAuth } from "../../contexts/AuthContext.jsx";
 import "./LoginPage.css";
 
 export default function LoginPage() {
@@ -20,8 +20,6 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [showResendEmail, setShowResendEmail] = useState(false);
-
-
 
   async function handleResendConfirmation(email) {
     try {
@@ -43,8 +41,6 @@ export default function LoginPage() {
       setError('Failed to resend confirmation email: ' + error.message);
     }
   }
-
-
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -117,28 +113,28 @@ export default function LoginPage() {
                 staff_id: "",
               });
             }}
-                     >
-             <span className="tab-icon">👤</span>
-             <span>Guest</span>
-           </button>
-           <button
-             type="button"
-             className={`tab ${activeTab === "staff" ? "active" : ""}`}
-             onClick={() => {
-               setActiveTab("staff");
-               setError("");
-               setShowResendEmail(false);
-               setForm({
-                 email: "",
-                 password: "",
-                 full_name: "",
-                 room_no: "",
-                 staff_id: "",
-               });
-             }}
-           >
-             <span className="tab-icon">👨‍💼</span>
-             <span>Staff</span>
+          >
+            <span className="tab-icon">👤</span>
+            <span>Guest</span>
+          </button>
+          <button
+            type="button"
+            className={`tab ${activeTab === "staff" ? "active" : ""}`}
+            onClick={() => {
+              setActiveTab("staff");
+              setError("");
+              setShowResendEmail(false);
+              setForm({
+                email: "",
+                password: "",
+                full_name: "",
+                room_no: "",
+                staff_id: "",
+              });
+            }}
+          >
+            <span className="tab-icon">👨‍💼</span>
+            <span>Staff</span>
           </button>
         </div>
 
