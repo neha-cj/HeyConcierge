@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext.jsx";
@@ -6,7 +6,7 @@ import "./LoginPage.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, signup, signupStaff } = useAuth();
+  const { user, login, signup, signupStaff } = useAuth();
   const [activeTab, setActiveTab] = useState("guest"); // "guest" or "staff"
   const [form, setForm] = useState({
     email: "",
@@ -20,6 +20,17 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isSignup, setIsSignup] = useState(false);
   const [showResendEmail, setShowResendEmail] = useState(false);
+
+  // Redirect after login when user is set
+  useEffect(() => {
+    if (user && !isSignup) {
+      if (activeTab === "guest") {
+        navigate("/user-dashboard");
+      } else {
+        navigate("/staff-dashboard");
+      }
+    }
+  }, [user, navigate, activeTab, isSignup]);
 
   async function handleResendConfirmation(email) {
     try {
@@ -61,7 +72,6 @@ export default function LoginPage() {
           }
           await signupStaff(form.email, form.password, form.full_name, form.staff_id);
         }
-        
         alert("Signup successful! Please check your email and click the confirmation link before logging in.");
         setIsSignup(false);
         return;
@@ -71,13 +81,12 @@ export default function LoginPage() {
       try {
         if (activeTab === "guest") {
           await login(form.email, form.password, "user");
-          navigate("/user-dashboard");
+          // Navigation handled by useEffect
         } else {
           await login(form.email, form.password, "staff");
-          navigate("/staff-dashboard");
+          // Navigation handled by useEffect
         }
       } catch (loginError) {
-        // Handle specific login errors
         if (loginError.message.includes('Email not confirmed')) {
           setShowResendEmail(true);
           throw new Error('Please check your email and click the confirmation link before logging in. You can also resend the confirmation email below.');
@@ -89,6 +98,20 @@ export default function LoginPage() {
     } finally {
       setLoading(false);
     }
+  }
+
+  // Show spinner if loading and user is not set yet after login
+  if (loading && !user && !isSignup) {
+    return (
+      <div className="login-page">
+        <div className="login-form">
+          <div className="logo-brand">NestInn</div>
+          <div style={{ margin: "2rem", textAlign: "center" }}>
+            <span>Logging in...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

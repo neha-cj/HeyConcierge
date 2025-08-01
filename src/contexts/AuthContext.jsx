@@ -126,7 +126,7 @@ export function AuthProvider({ children }) {
       id: userId,
       email,
       full_name: fullName,
-      room_number: roomNumber,
+      room_no: roomNumber,
     });
 
     if (insertErr) throw insertErr;
