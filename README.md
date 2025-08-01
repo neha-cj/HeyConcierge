@@ -26,9 +26,6 @@ This project provides hotel guests with a simple way to request services (like c
 - [Core Features](#core-features)
 - [Tech Stack](#tech-stack)
 - [Project Structure](#project-structure)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
 - [Usage](#usage)
   - [Running the Frontend](#running-the-frontend)
   - [Connecting with Supabase](#connecting-with-supabase)
@@ -80,7 +77,6 @@ HeyConcierge/
 │   ├── contexts/
 │   │   └── AuthContext.jsx
 │   ├── pages/
-│   │   ├── admin/                # (Optional placeholder)
 │   │   ├── auth/
 │   │   │   ├── LoginPage.jsx
 │   │   │   └── LoginPage.css
@@ -99,24 +95,6 @@ HeyConcierge/
 ├── package.json
 ├── vite.config.js
 └── README.md
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js & npm
-- Git
-- Supabase account
-
-### Installation
-
-```bash
-git clone https://github.com/yourusername/NestInn.git
-cd NestInn
-npm install
 ```
 
 ---
