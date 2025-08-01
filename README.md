@@ -7,11 +7,11 @@ NestInn is a digital concierge solution for hotels that empowers guests to reque
 ## Demo Screenshots
 
 ![Login Page](./screenshots/login.png)
-![User Dashboard](./screenshots/user-dashboard.png)
-![User Dashboard](./screenshots/user-dashboard1.png)
-![Staff Dashboard](./screenshots/staff-dashboard.png)
-![Staff Dashboard](./screenshots/staff-dashboard1.png)
-![Service Request Flow](./screenshots/service-request.png)
+![User Dashboard](./screenshots/user-dashboard.jpg)
+![User Dashboard](./screenshots/user-dashboard1.jpg)
+![Staff Dashboard](./screenshots/staff-dashboard.jpg)
+![Staff Dashboard](./screenshots/staff-dashboard1.jpg)
+![Service Request Flow](./screenshots/service-request.jpg)
 
 ---
 
