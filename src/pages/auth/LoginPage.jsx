@@ -1,18 +1,19 @@
 import { useState } from "react";
 import { supabase } from "../../services/supabaseClient";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuth } from "../../contexts/useAuth.jsx";
 import "./LoginPage.css";
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const { login, signup } = useAuth();
+  const { login, signup, signupStaff } = useAuth();
+  const [activeTab, setActiveTab] = useState("guest"); // "guest" or "staff"
   const [form, setForm] = useState({
     email: "",
     password: "",
-    role: "user", // Default to user
     full_name: "",
-    room_number: "",
+    room_no: "",
+    staff_id: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -20,60 +21,7 @@ export default function LoginPage() {
   const [isSignup, setIsSignup] = useState(false);
   const [showResendEmail, setShowResendEmail] = useState(false);
 
-  async function handleSignup(email, password, full_name, room_number) {
-    try {
-      // Check if Supabase client is properly configured
-      if (!supabase) {
-        throw new Error('Supabase client not initialized');
-      }
 
-      // 1. Create auth user with email confirmation
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name,
-            room_number
-          },
-          emailRedirectTo: `${window.location.origin}/auth/callback`
-        }
-      });
-
-      if (authError) {
-        throw authError;
-      }
-
-      if (!authData.user) {
-        throw new Error('No user data returned from auth signup');
-      }
-
-      // 2. Add to users table
-      const { data: insertData, error: dbError } = await supabase
-        .from('users')
-        .insert([{
-          id: authData.user.id,
-          email: email,
-          full_name: full_name,
-          room_number: room_number,
-        }])
-        .select();
-
-      if (dbError) {
-        // If database insert fails, we should clean up the auth user
-        try {
-          await supabase.auth.admin.deleteUser(authData.user.id);
-        } catch (cleanupError) {
-          // Silently handle cleanup error
-        }
-        throw dbError;
-      }
-
-      return authData;
-    } catch (error) {
-      throw error;
-    }
-  }
 
   async function handleResendConfirmation(email) {
     try {
@@ -96,49 +44,7 @@ export default function LoginPage() {
     }
   }
 
-  async function handleLogin(email, password, role) {
-    try {
-      // 1. Authenticate
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
 
-      if (authError) {
-        // Provide more specific error messages
-        if (authError.message.includes('Email not confirmed')) {
-          setShowResendEmail(true);
-          throw new Error('Please check your email and click the confirmation link before logging in. You can also resend the confirmation email below.');
-        }
-        throw authError;
-      }
-
-      // Check if email is confirmed
-      if (authData.user && !authData.user.email_confirmed_at) {
-        await supabase.auth.signOut();
-        throw new Error('Please check your email and click the confirmation link before logging in.');
-      }
-
-      // 2. Verify user exists in correct table
-      let tableName = "users";
-      if (role === "staff") tableName = "staff";
-
-      const { data, error: dbError } = await supabase
-        .from(tableName)
-        .select("*")
-        .eq("email", email)
-        .single();
-
-      if (dbError || !data) {
-        await supabase.auth.signOut();
-        throw new Error("Account not found in database");
-      }
-
-      return { user: authData.user, role };
-    } catch (error) {
-      throw error;
-    }
-  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -147,15 +53,18 @@ export default function LoginPage() {
 
     try {
       if (isSignup) {
-        // Only users (guests) can sign up
-        
-        // Validate required fields
-        if (!form.email || !form.password || !form.full_name || !form.room_number) {
-          throw new Error('All fields are required for signup');
+        // Validate required fields based on active tab
+        if (activeTab === "guest") {
+          if (!form.email || !form.password || !form.full_name || !form.room_no) {
+            throw new Error('All fields are required for guest signup');
+          }
+          await signup(form.email, form.password, form.full_name, form.room_no);
+        } else {
+          if (!form.email || !form.password || !form.full_name || !form.staff_id) {
+            throw new Error('All fields are required for staff signup');
+          }
+          await signupStaff(form.email, form.password, form.full_name, form.staff_id);
         }
-
-        // Use AuthContext signup function
-        await signup(form.email, form.password, form.full_name, form.room_number);
         
         alert("Signup successful! Please check your email and click the confirmation link before logging in.");
         setIsSignup(false);
@@ -164,14 +73,12 @@ export default function LoginPage() {
 
       // Login logic
       try {
-        // Use AuthContext login function
-        await login(form.email, form.password, form.role);
-        
-        // Determine role and redirect
-        if (form.role === "staff") {
-          navigate("/staff-dashboard");
-        } else {
+        if (activeTab === "guest") {
+          await login(form.email, form.password, "user");
           navigate("/user-dashboard");
+        } else {
+          await login(form.email, form.password, "staff");
+          navigate("/staff-dashboard");
         }
       } catch (loginError) {
         // Handle specific login errors
@@ -192,91 +99,144 @@ export default function LoginPage() {
     <div className="login-page">
       <form className="login-form" onSubmit={handleSubmit}>
         <div className="logo-brand">NestInn</div>
-        <div className="subtitle">{isSignup ? "Guest Sign Up" : "Concierge Login"}</div>
+        
+        {/* Tab Navigation */}
+        <div className="tab-container">
+          <button
+            type="button"
+            className={`tab ${activeTab === "guest" ? "active" : ""}`}
+            onClick={() => {
+              setActiveTab("guest");
+              setError("");
+              setShowResendEmail(false);
+              setForm({
+                email: "",
+                password: "",
+                full_name: "",
+                room_no: "",
+                staff_id: "",
+              });
+            }}
+                     >
+             <span className="tab-icon">👤</span>
+             <span>Guest</span>
+           </button>
+           <button
+             type="button"
+             className={`tab ${activeTab === "staff" ? "active" : ""}`}
+             onClick={() => {
+               setActiveTab("staff");
+               setError("");
+               setShowResendEmail(false);
+               setForm({
+                 email: "",
+                 password: "",
+                 full_name: "",
+                 room_no: "",
+                 staff_id: "",
+               });
+             }}
+           >
+             <span className="tab-icon">👨‍💼</span>
+             <span>Staff</span>
+          </button>
+        </div>
 
-        <input
-          type="email"
-          placeholder="Email Address"
-          value={form.email}
-          required
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={form.password}
-          required
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-        />
-
-        {/* Extra fields for Guest Signup */}
-        {isSignup && (
-          <>
-            <input
-              type="text"
-              placeholder="Full Name"
-              value={form.full_name}
-              required
-              onChange={(e) => setForm({ ...form, full_name: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Room Number"
-              value={form.room_number}
-              required
-              onChange={(e) => setForm({ ...form, room_number: e.target.value })}
-            />
-          </>
+        <div className="subtitle">
+          {activeTab === "guest" ? "Guest Services" : "Staff Services"}
+        </div>
+        
+        {!isSignup && (
+          <div className="welcome-text">
+            Welcome back! Please sign in to continue
+          </div>
         )}
 
-        {/* Role selector only shown during login */}
-        {!isSignup && (
-          <select
-            value={form.role}
-            onChange={(e) => setForm({ ...form, role: e.target.value })}
-          >
-            <option value="user">Guest</option>
-            <option value="staff">Staff</option>
-          </select>
+        <div className="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            value={form.email}
+            required
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
+          />
+        </div>
+
+        <div className="form-group">
+          <label>Password</label>
+          <input
+            type="password"
+            placeholder="Enter your password"
+            value={form.password}
+            required
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
+          />
+        </div>
+
+        {/* Extra fields for Signup */}
+        {isSignup && (
+          <>
+            <div className="form-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                placeholder="Enter your full name"
+                value={form.full_name}
+                required
+                onChange={(e) => setForm({ ...form, full_name: e.target.value })}
+              />
+            </div>
+            
+            {activeTab === "guest" ? (
+              <div className="form-group">
+                <label>Room Number</label>
+                <input
+                  type="text"
+                  placeholder="Enter your room number"
+                  value={form.room_no}
+                  required
+                  onChange={(e) => setForm({ ...form, room_no: e.target.value })}
+                />
+              </div>
+            ) : (
+              <div className="form-group">
+                <label>Staff ID</label>
+                <input
+                  type="text"
+                  placeholder="Enter your staff ID"
+                  value={form.staff_id}
+                  required
+                  onChange={(e) => setForm({ ...form, staff_id: e.target.value })}
+                />
+              </div>
+            )}
+          </>
         )}
 
         {error && <div className="error-msg">{error}</div>}
 
         {showResendEmail && (
-          <div style={{ 
-            marginTop: '10px', 
-            padding: '10px', 
-            backgroundColor: '#fff3cd', 
-            borderRadius: '5px',
-            textAlign: 'center'
-          }}>
-            <p style={{ margin: '0 0 10px 0' }}>Didn't receive the confirmation email?</p>
+          <div className="resend-email">
+            <p>Didn't receive the confirmation email?</p>
             <button
               type="button"
               onClick={() => handleResendConfirmation(form.email)}
-              style={{
-                padding: '8px 16px',
-                backgroundColor: '#28a745',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                fontSize: '14px'
-              }}
+              className="resend-btn"
             >
               Resend Confirmation Email
             </button>
           </div>
         )}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" disabled={loading} className="submit-btn">
           {loading
             ? isSignup
               ? "Signing up..."
               : "Logging in..."
             : isSignup
             ? "Sign Up"
-            : "Login"}
+            : `Access ${activeTab === "guest" ? "Guest" : "Staff"} Services`}
         </button>
 
         <button
@@ -287,14 +247,17 @@ export default function LoginPage() {
             setError("");
             setShowResendEmail(false);
             setForm({
-              ...form,
-              role: "user",
+              email: "",
+              password: "",
               full_name: "",
-              room_number: ""
+              room_no: "",
+              staff_id: "",
             });
           }}
         >
-          {isSignup ? "Already have an account? Login" : "New Guest? Sign Up"}
+          {isSignup 
+            ? `Already have an account? Login as ${activeTab === "guest" ? "Guest" : "Staff"}`
+            : `New ${activeTab === "guest" ? "Guest" : "Staff"}? Sign Up`}
         </button>
       </form>
     </div>
