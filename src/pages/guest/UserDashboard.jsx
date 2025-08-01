@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "../../contexts/useAuth";
+import { useAuth } from "../../contexts/useAuth.jsx";
 import { Link } from "react-router-dom";
 import { supabase } from "../../services/supabaseClient";
 import "./UserDashboard.css";
@@ -121,9 +121,9 @@ export default function UserDashboard() {
       <nav className="user-nav">
         <div className="nav-logo">🏨 <span>NestInn</span></div>
         <div>
-          <Link className="profile-btn" to="/user-profile">
-            {userData?.full_name || user?.user_metadata?.full_name} ({userData?.room_number || user?.user_metadata?.room_number})
-          </Link>
+                     <Link className="profile-btn" to="/user-profile">
+             {userData?.full_name || user?.user_metadata?.full_name} ({userData?.room_no || user?.user_metadata?.room_no})
+           </Link>
           <button className="logout-btn" onClick={logout}>Logout</button>
         </div>
       </nav>
